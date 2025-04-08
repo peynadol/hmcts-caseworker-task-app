@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest"
-import { getAllTasks, addTask } from "../db/queries.js"
+import { getAllTasks, addTask, deleteTask, updateTask } from "../db/queries.js"
 import { pool } from "../db/db.js"
 
 describe("getAllTasks", () => {
@@ -29,3 +29,22 @@ describe("addTask", () => {
 		)
 	})
 })
+
+describe("deleteTask", () => {
+	it("should delete task", async () => {
+		const id = 1
+
+		pool.query = vi.fn().mockResolvedValue({})
+		await deleteTask(id)
+		expect(pool.query).toHaveBeenCalledWith(
+			"DELETE FROM tasks WHERE id = $1",
+			[id]
+		)
+	})
+})
+
+//describe("updateTask", () => {
+//	it("should update task fields correctly", async () => {
+//	TODO: come back to this when i have a better understanding of testing and mocking
+//	})
+//})
