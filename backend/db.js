@@ -3,20 +3,18 @@ import dotenv from "dotenv"
 
 dotenv.config()
 
-const { Client } = pg
+const { Pool } = pg
 
+const pool = new Pool({
+	database: "postgres",
+	user: process.env.PGUSER,
+	password: process.env.PGPASSWORD,
+	host: process.env.PGHOST,
+	port: process.env.PGPORT
+})
 async function setupTable() {
-	const client = new Client({
-		database: "postgres",
-		user: process.env.PGUSER,
-		password: process.env.PGPASSWORD,
-		host: process.env.PGHOST,
-		port: process.env.PGPORT
-	})
-
 	try {
-		await client.connect()
-		await client.query(`
+		await pool.query(`
 CREATE TABLE IF NOT EXISTS tasks (
 id SERIAL PRIMARY KEY,
 title TEXT NOT NULL,
@@ -28,9 +26,13 @@ due_date TIMESTAMP
 		console.log("Table 'tasks' created")
 	} catch (err) {
 		console.error(err)
-	} finally {
-		await client.end()
 	}
 }
 
-setupTable()
+async function initDB() {
+	await setupTable()
+	await pool.query("SELECT NOW()")
+	console.log("db connected")
+}
+
+export { pool, initDB }
