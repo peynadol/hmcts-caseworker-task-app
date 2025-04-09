@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
-import { addTask, deleteTask, getAllTasks } from "./db/queries.js"
+import { addTask, deleteTask, getAllTasks, updateTask } from "./db/queries.js"
 
 const app = express()
 const port = 3000
@@ -61,6 +61,21 @@ app.delete("/tasks/:id", async (req, res) => {
 
 // update a task
 app.patch("/tasks/:id", async (req, res) => {
+	const { id } = req.params
+	const { title, description, status, due_date } = req.body
+	// maybe package this into a new object to pass to the updateTask func
+	const updatedTask = {
+		title,
+		description,
+		status,
+		due_date
+	}
+	try {
+		const task = await updateTask(id, updatedTask)
+		res.status(200).json(task)
+	} catch (err) {
+		res.status(500).json({ message: err.message })
+	}
 
 })
 

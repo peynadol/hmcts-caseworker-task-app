@@ -25,11 +25,13 @@ description = COALESCE($2, description),
 status = COALESCE($3, status),
 due_date = COALESCE($4, due_date)
 WHERE id = $5
+RETURNING *
 `
-	await pool.query(query, [updatedTask.title,
+	const results = await pool.query(query, [updatedTask.title,
 	updatedTask.description,
 	updatedTask.status,
 	updatedTask.due_date,
 		taskId
 	])
+	return results.rows[0]
 }
