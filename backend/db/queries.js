@@ -6,8 +6,9 @@ export async function getAllTasks() {
 }
 
 export async function addTask(title, description, status = 0, due_date = null) {
-	const query = "INSERT INTO tasks (title, description, status, due_date) VALUES ($1, $2, $3, $4)"
-	await pool.query(query, [title, description, status, due_date])
+	const query = "INSERT INTO tasks (title, description, status, due_date) VALUES ($1, $2, $3, $4) RETURNING *"
+	const result = await pool.query(query, [title, description, status, due_date])
+	return result.rows[0]
 }
 
 export async function deleteTask(id) {

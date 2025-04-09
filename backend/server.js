@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
+import { addTask, getAllTasks } from "./db/queries.js"
 
 const app = express()
 const port = 3000
@@ -15,36 +16,44 @@ app.use(morgan("dev"))
 //	status: 0,
 //	due_date: "EOW}"
 //}]
-let tasks = []
 
 
 // fetch all tasks
-app.get("/", async (req, res) => {
-
+app.get("/tasks", async (req, res) => {
 	try {
-		if (!tasks || tasks.length === 0) {
-			throw new Error("No tasks")
-		}
+		const tasks = await getAllTasks()
 		res.status(200).json(tasks)
-	}
-	catch (err) {
-		res.status(500).json({ message: err.message })
+	} catch (err) {
+		console.error(err)
+		res.status(500).json({ message: "Error when fetching tasks" })
 	}
 
 })
 
 // post a task
-app.post("/", async (req, res) => {
+app.post("/tasks", async (req, res) => {
+	const { title, description, status, due_date } = req.body
 
+	try {
+		const task = await addTask(
+			title,
+			description,
+			status,
+			due_date
+		)
+		res.status(201).json(task)
+	} catch (err) {
+		res.status(500).json({ message: err.message })
+	}
 })
 
 // delete individual task
-app.delete("/:id", async (req, res) => {
+app.delete("/tasks/:id", async (req, res) => {
 
 })
 
 // update a task
-app.patch("/:id", async (req, res) => {
+app.patch("/tasks/:id", async (req, res) => {
 
 })
 
