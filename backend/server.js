@@ -1,7 +1,7 @@
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
-import { addTask, getAllTasks } from "./db/queries.js"
+import { addTask, deleteTask, getAllTasks } from "./db/queries.js"
 
 const app = express()
 const port = 3000
@@ -49,7 +49,14 @@ app.post("/tasks", async (req, res) => {
 
 // delete individual task
 app.delete("/tasks/:id", async (req, res) => {
+	const { id } = req.params
 
+	try {
+		await deleteTask(id)
+		res.status(204).send()
+	} catch (err) {
+		res.status(500).json({ message: err.message })
+	}
 })
 
 // update a task
