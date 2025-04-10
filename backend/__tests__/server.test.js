@@ -1,5 +1,5 @@
 import request from "supertest";
-import { beforeAll, describe, expect, it, vi, afterAll, beforeAll } from "vitest"
+import { beforeAll, describe, expect, it, vi, afterAll, beforeAll, test } from "vitest"
 import { app } from "../server.js"
 import { pool } from "../db/db.js"
 
@@ -55,6 +55,46 @@ describe("Task API endpoints", () => {
 					due_date: "invalid date format"
 				})
 			expect(res.status).toBe(500)
+		})
+	})
+
+	describe("GET /tasks", () => {
+		it("should get all tasks", async () => {
+			const res = await request(app).get("/tasks")
+
+			expect(res.status).toBe(200)
+			expect(res.body.some(task => task.id === testTaskId)).toBe(true)
+		})
+	})
+
+	describe("PATCH /tasks/:id", () => {
+		it("should update a task", async () => {
+			const updatedData = {
+				title: "Updated title",
+				status: 2
+			}
+
+			const res = await request(app)
+				.patch(`/tasks/${testTaskId}`)
+				.send(updatedData)
+
+			expect(res.status).toBe(200)
+			expect(res.body.title).toBe(updatedData.title)
+			expect(res.body.status).toBe(updatedData.status)
+
+			expect(res.body.description).toBe(testTask.description)
+		})
+
+
+	})
+
+	describe("DELETE /tasks/:id", () => {
+		it("should delete a task", async () => {
+			const res = await request(app).delete(`/tasks/${testTaskId}`)
+			expect(res.status).toBe(204)
+
+			const getRes = await request(app).get("/tasks")
+			expect(getRes.body.some(task => task.id === testTaskId)).toBe(false)
 		})
 	})
 })
