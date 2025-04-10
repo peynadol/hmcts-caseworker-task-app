@@ -1,3 +1,4 @@
+//TODO: add input validation to routes
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
@@ -63,7 +64,6 @@ app.delete("/tasks/:id", async (req, res) => {
 app.patch("/tasks/:id", async (req, res) => {
 	const { id } = req.params
 	const { title, description, status, due_date } = req.body
-	// maybe package this into a new object to pass to the updateTask func
 	const updatedTask = {
 		title,
 		description,

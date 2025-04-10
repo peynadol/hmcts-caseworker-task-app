@@ -1,0 +1,11 @@
+.govuk-table__row.delete-mode {
+	cursor: pointer;
+}
+
+.govuk-table__row.delete-mode:hover {
+	background-color: #ffebee;
+}
+
+.govuk-table__row.selected {
+	background-color: #ffcdd2;
+}
