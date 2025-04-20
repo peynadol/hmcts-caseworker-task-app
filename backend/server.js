@@ -61,17 +61,28 @@ app.delete("/tasks/:id", async (req, res) => {
 // update a task
 app.patch("/tasks/:id", async (req, res) => {
   try {
+    // Make sure to parse the ID if your database expects a number
+    const taskId = parseInt(req.params.id, 10);
+
+    // Log the data being validated to help with debugging
+    console.log("Request body:", req.body);
+
     const validatedData = TaskSchema.partial().parse(req.body);
+    console.log("Validated data:", validatedData);
 
-    const task = await updateTask(req.params.id, validatedData);
-
+    const task = await updateTask(taskId, validatedData);
     res.status(200).json(task);
   } catch (err) {
+    console.error("Error updating task:", err);
+
     if (err instanceof z.ZodError) {
       return res.status(400).json({
         error: "Validation failed",
+        details: err.errors,
       });
     }
+
+    // Consider more specific error handling here
     res.status(500).json({ error: "Internal server error" });
   }
 });

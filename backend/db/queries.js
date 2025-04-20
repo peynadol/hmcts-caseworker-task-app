@@ -17,21 +17,33 @@ export async function deleteTask(id) {
 }
 
 export async function updateTask(taskId, updatedTask) {
-	const query = `
-UPDATE tasks
-SET 
-title = COALESCE($1, title),
-description = COALESCE($2, description),
-status = COALESCE($3, status),
-due_date = COALESCE($4, due_date)
-WHERE id = $5
-RETURNING *
-`
-	const results = await pool.query(query, [updatedTask.title,
-	updatedTask.description,
-	updatedTask.status,
-	updatedTask.due_date,
-		taskId
-	])
-	return results.rows[0]
+    const query = `
+        UPDATE tasks
+        SET 
+            title = COALESCE($1, title),
+            description = COALESCE($2, description),
+            status = COALESCE($3, status),
+            due_date = COALESCE($4, due_date)
+        WHERE id = $5
+        RETURNING *
+    `;
+    
+    try {
+        const results = await pool.query(query, [
+            updatedTask.title,
+            updatedTask.description,
+            updatedTask.status,
+            updatedTask.due_date,
+            taskId
+        ]);
+        
+        if (results.rows.length === 0) {
+            throw new Error(`Task with id ${taskId} not found`);
+        }
+        
+        return results.rows[0];
+    } catch (error) {
+        console.error("Database error in updateTask:", error);
+        throw error; 
+    }
 }

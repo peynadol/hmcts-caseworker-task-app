@@ -1,54 +1,73 @@
-import Header from "../components/Header"
-import Title from "../components/Title"
-import AddTaskButton from "../components/AddTaskButton"
-import DeleteButton from "../components/DeleteButton"
-import TaskTable from "../components/TaskTable"
-import Modal from "../components/Modal"
-import CreateTaskForm from "../components/CreateTaskForm"
-import { useState, useEffect } from "react"
-import axios from "axios"
+import Header from "../components/Header";
+import Title from "../components/Title";
+import AddTaskButton from "../components/AddTaskButton";
+import DeleteButton from "../components/DeleteButton";
+import TaskTable from "../components/TaskTable";
+import Modal from "../components/Modal";
+import CreateTaskForm from "../components/CreateTaskForm";
+import EditTaskForm from "../components/EditTaskForm";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [tasks, setTasks] = useState([])
-  const [isDeleteMode, setIsDeleteMode] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState(null);
 
   useEffect(() => {
     const getTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/tasks")
-        setTasks(response.data)
+        const response = await axios.get("http://localhost:3000/tasks");
+        setTasks(response.data);
       } catch (err) {
-        console.error("Unable to fetch tasks", err)
+        console.error("Unable to fetch tasks", err);
       }
-    }
-    getTasks()
-  }, [])
+    };
+    getTasks();
+  }, []);
 
   const openModal = () => {
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
-  const closeModal = () => setIsModalOpen(false)
+  const closeModal = () => setIsModalOpen(false);
 
   const handleCreateTask = (task) => {
-    setTasks((prevTasks) => [...prevTasks, task])
-    closeModal()
-  }
+    setTasks((prevTasks) => [...prevTasks, task]);
+    closeModal();
+  };
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:3000/tasks/${taskId}`)
-      setTasks(tasks.filter(task => task.id !== taskId))
+      await axios.delete(`http://localhost:3000/tasks/${taskId}`);
+      setTasks(tasks.filter((task) => task.id !== taskId));
     } catch (err) {
-      console.error("Unable to delete task", err)
+      console.error("Unable to delete task", err);
     }
-  }
+  };
 
   const toggleDeleteMode = () => {
-    setIsDeleteMode(!isDeleteMode)
-  }
+    setIsDeleteMode(!isDeleteMode);
+  };
 
+  const openEditModal = (task) => {
+    setTaskToEdit(task);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setTaskToEdit(null);
+    setIsEditModalOpen(false);
+  };
+
+  const handleTaskEdit = (updatedTask) => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+    closeEditModal();
+  };
 
   return (
     <>
@@ -56,18 +75,29 @@ function App() {
       <Title />
       <AddTaskButton onClick={openModal} />
       <DeleteButton onClick={toggleDeleteMode} isActive={isDeleteMode} />
-      <TaskTable tasks={tasks}
+      <TaskTable
+        tasks={tasks}
         onDelete={handleDeleteTask}
         isDeleteMode={isDeleteMode}
         setIsDeleteMode={setIsDeleteMode}
+        onEdit={openEditModal}
       />
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <CreateTaskForm onSubmit={handleCreateTask} />
       </Modal>
 
+      {isEditModalOpen && (
+        <Modal isOpen={isEditModalOpen} onClose={closeEditModal}>
+          <EditTaskForm
+            task={taskToEdit}
+            onSubmit={handleTaskEdit}
+            onCancel={closeEditModal}
+          />
+        </Modal>
+      )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
