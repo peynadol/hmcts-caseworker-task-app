@@ -46,6 +46,7 @@ export default function EditTaskForm({ task, onSubmit, onCancel }) {
       <h2 className="govuk-heading-m">Edit Task</h2>
       <label className="govuk-label">Title</label>
       <input
+        id="edit-title-input"
         className="govuk-input"
         name="title"
         value={formData.title}
@@ -55,6 +56,7 @@ export default function EditTaskForm({ task, onSubmit, onCancel }) {
 
       <label className="govuk-label">Description</label>
       <textarea
+        id="edit-desc-input"
         className="govuk-textarea"
         name="description"
         value={formData.description}
@@ -63,6 +65,7 @@ export default function EditTaskForm({ task, onSubmit, onCancel }) {
 
       <label className="govuk-label">Status</label>
       <select
+        id="edit-select"
         className="govuk-select"
         name="status"
         value={formData.status}
@@ -75,6 +78,7 @@ export default function EditTaskForm({ task, onSubmit, onCancel }) {
 
       <label className="govuk-label">Due Date</label>
       <input
+        id="edit-date"
         className="govuk-input"
         type="date"
         name="due_date"

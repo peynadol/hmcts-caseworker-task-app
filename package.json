@@ -1,5 +1,10 @@
 {
   "dependencies": {
     "zod": "^3.24.3"
-  }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.14.1"
+  },
+  "scripts": {}
 }

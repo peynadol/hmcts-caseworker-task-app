@@ -3,3 +3,9 @@ node_modules/
 .dotenv
 .DS_Store
 todo.md
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
