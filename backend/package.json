@@ -1,8 +1,7 @@
 {
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node server.js",
     "test": "vitest",
     "dev": "node --watch server.js"
   },
@@ -13,10 +12,10 @@
     "morgan": "^1.10.0",
     "pg": "^8.14.1",
     "response-time": "^2.3.3",
-    "supertest": "^7.1.0"
+    "supertest": "^7.1.0",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
     "vitest": "^3.1.1"
   }
 }

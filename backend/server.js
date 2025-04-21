@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { addTask, deleteTask, getAllTasks, updateTask } from "./db/queries.js";
-import { TaskSchema } from "../schemas/task.ts";
+import { TaskSchema } from "../schemas/task.js";
 import { z } from "zod";
 
 const app = express();

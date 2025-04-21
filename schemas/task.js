@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+/**
+ * @type {import('zod').ZodObject<any>}
+ */
+
 export const TaskSchema = z.object({
   title: z.string().min(1, "Title is required").max(50),
   description: z.string().max(500).nullable().optional(),
@@ -17,4 +21,3 @@ export const TaskSchema = z.object({
   ),
 });
 
-export type Task = z.infer<typeof TaskSchema>;

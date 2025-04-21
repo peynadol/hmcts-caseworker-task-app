@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { z } from "zod";
-import { TaskSchema } from "../../schemas/task";
+import { TaskSchema } from "../../schemas/task.js";
 import { apiClient } from "../src/api";
 
 function CreateTaskForm({ onSubmit }) {
