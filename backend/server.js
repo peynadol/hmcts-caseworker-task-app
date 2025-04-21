@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(express.static(frontendPath));
+// app.use(express.static(frontendPath));
 
 // app.get("/", (req, res) => {
 //   res.sendFile(path.join(frontendPath, "index.html"));
