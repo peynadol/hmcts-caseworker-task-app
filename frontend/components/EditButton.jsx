@@ -6,7 +6,7 @@ export default function EditButton({ onClick }) {
       data-module="govuk-button"
       onClick={(e) => {
         e.stopPropagation();
-        onclick(e);
+        onClick(e);
       }}
     >
       Edit Task
