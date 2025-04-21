@@ -12,12 +12,13 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const frontendPath = path.join(process.cwd(), "frontend", "dist");
+
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(express.static(frontendPath));
 
-// Serve the React app's index.html at the root
-const frontendPath = path.join(process.cwd(), "frontend", "dist");
 app.get("/", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
@@ -90,9 +91,6 @@ app.patch("/tasks/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-// Serve static files from 'frontend/dist'
-app.use(express.static(frontendPath));
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
