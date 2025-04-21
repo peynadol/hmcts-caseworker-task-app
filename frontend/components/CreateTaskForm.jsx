@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { z } from "zod";
 import { TaskSchema } from "../../schemas/task";
@@ -9,9 +9,87 @@ function CreateTaskForm({ onSubmit }) {
   const [taskStatus, setTaskStatus] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
 
+  // Add validation state
+  const [errors, setErrors] = useState({
+    title: "",
+    date: "",
+  });
+
+  // Form validation using Zod
+  const validateForm = React.useCallback(() => {
+    const newErrors = {
+      title: "",
+      date: "",
+    };
+
+    // Title validation
+    const titleSchema = z.string().min(1, "Task title is required");
+    const titleResult = titleSchema.safeParse(taskTitle);
+    if (!titleResult.success) {
+      newErrors.title = titleResult.error.errors[0].message;
+    }
+
+    // Date validation
+    if (taskDate.day && taskDate.month && taskDate.year) {
+      try {
+        // Create date schema
+        const dateSchema = z.date().refine(
+          (date) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return date >= today;
+          },
+          { message: "Task date cannot be in the past" }
+        );
+
+        // Parse and validate the date
+        const dateStr = `${taskDate.year}-${taskDate.month}-${taskDate.day}`;
+        const dateObj = new Date(dateStr);
+
+        // First check if it's a valid date
+        if (isNaN(dateObj.getTime())) {
+          newErrors.date = "Please enter a valid date";
+        } else {
+          // Then use the schema to validate if it's not in the past
+          const dateResult = dateSchema.safeParse(dateObj);
+          if (!dateResult.success) {
+            newErrors.date = dateResult.error.errors[0].message;
+          }
+        }
+      } catch {
+        newErrors.date = "Please enter a valid date";
+      }
+    }
+
+    setErrors(newErrors);
+
+    // Return whether the form is valid
+    return !newErrors.title && !newErrors.date;
+  }, [taskTitle, taskDate]);
+
+  // Validate form on any field change
+  useEffect(() => {
+    validateForm();
+  }, [validateForm]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate the form before submission
+    const isValid = validateForm();
+
+    // Check if form is valid and all required fields are filled
+    if (
+      !isValid ||
+      !taskStatus ||
+      !taskDate.day ||
+      !taskDate.month ||
+      !taskDate.year
+    ) {
+      return;
+    }
+
+    // convert to db friendly string
     const formattedDate = new Date(
       `${taskDate.year}-${taskDate.month}-${taskDate.day}`
     ).toISOString();
@@ -54,31 +132,50 @@ function CreateTaskForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} noValidate>
       {/* Task Title */}
-      <div className="govuk-form-group">
+      <div
+        className={`govuk-form-group ${
+          errors.title ? "govuk-form-group--error" : ""
+        }`}
+      >
         <h1 className="govuk-label-wrapper">
           <label className="govuk-label govuk-label--l" htmlFor="task-title">
             Task Title
           </label>
         </h1>
+        {errors.title && (
+          <span id="task-title-error" className="govuk-error-message">
+            <span className="govuk-visually-hidden">Error:</span> {errors.title}
+          </span>
+        )}
         <input
-          className="govuk-input"
+          className={`govuk-input ${errors.title ? "govuk-input--error" : ""}`}
           id="task-title"
           name="taskTitle"
           type="text"
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
+          aria-describedby={errors.title ? "task-title-error" : ""}
         />
       </div>
 
       {/* Task Date */}
-      <div className="govuk-form-group">
+      <div
+        className={`govuk-form-group ${
+          errors.date ? "govuk-form-group--error" : ""
+        }`}
+      >
         <h1 className="govuk-label-wrapper">
           <label className="govuk-label govuk-label--l" htmlFor="task-date">
             Task Date
           </label>
         </h1>
+        {errors.date && (
+          <span id="task-date-error" className="govuk-error-message">
+            <span className="govuk-visually-hidden">Error:</span> {errors.date}
+          </span>
+        )}
         <div className="govuk-date-input" id="task-date">
           <div className="govuk-date-input__item">
             <div className="govuk-form-group">
@@ -89,7 +186,9 @@ function CreateTaskForm({ onSubmit }) {
                 Day
               </label>
               <input
-                className="govuk-input govuk-date-input__input govuk-input--width-2"
+                className={`govuk-input govuk-date-input__input govuk-input--width-2 ${
+                  errors.date ? "govuk-input--error" : ""
+                }`}
                 id="task-day"
                 name="task-day"
                 type="text"
@@ -98,6 +197,7 @@ function CreateTaskForm({ onSubmit }) {
                 onChange={(e) =>
                   setTaskDate({ ...taskDate, day: e.target.value })
                 }
+                aria-describedby={errors.date ? "task-date-error" : ""}
               />
             </div>
           </div>
@@ -110,7 +210,9 @@ function CreateTaskForm({ onSubmit }) {
                 Month
               </label>
               <input
-                className="govuk-input govuk-date-input__input govuk-input--width-2"
+                className={`govuk-input govuk-date-input__input govuk-input--width-2 ${
+                  errors.date ? "govuk-input--error" : ""
+                }`}
                 id="task-month"
                 name="task-month"
                 type="text"
@@ -119,6 +221,7 @@ function CreateTaskForm({ onSubmit }) {
                 onChange={(e) =>
                   setTaskDate({ ...taskDate, month: e.target.value })
                 }
+                aria-describedby={errors.date ? "task-date-error" : ""}
               />
             </div>
           </div>
@@ -131,7 +234,9 @@ function CreateTaskForm({ onSubmit }) {
                 Year
               </label>
               <input
-                className="govuk-input govuk-date-input__input govuk-input--width-4"
+                className={`govuk-input govuk-date-input__input govuk-input--width-4 ${
+                  errors.date ? "govuk-input--error" : ""
+                }`}
                 id="task-year"
                 name="task-year"
                 type="text"
@@ -140,6 +245,7 @@ function CreateTaskForm({ onSubmit }) {
                 onChange={(e) =>
                   setTaskDate({ ...taskDate, year: e.target.value })
                 }
+                aria-describedby={errors.date ? "task-date-error" : ""}
               />
             </div>
           </div>

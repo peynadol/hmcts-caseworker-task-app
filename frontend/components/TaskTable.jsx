@@ -111,7 +111,7 @@ export default function TaskTable({
             <button
               className="govuk-button govuk-button--warning"
               onClick={handleDeleteConfirm}
-              disabled={tasks.length === 0} // Disable button if no tasks
+              disabled={tasks.length === 0} 
             >
               Confirm Delete
             </button>
