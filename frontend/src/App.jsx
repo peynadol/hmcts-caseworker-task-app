@@ -53,6 +53,7 @@ function App() {
   };
 
   const openEditModal = (task) => {
+    setIsDeleteMode(false);
     setTaskToEdit(task);
     setIsEditModalOpen(true);
   };
