@@ -1,10 +1,17 @@
 {
+  "name": "my-fullstack-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install": "npm install --prefix backend && npm install --prefix frontend",
+    "build": "npm run build --prefix frontend",  // Builds React/Vite frontend
+    "start": "npm start --prefix backend"       // Starts Express backend
+  },
   "dependencies": {
     "zod": "^3.24.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.14.1"
-  },
-  "scripts": {}
+  }
 }
