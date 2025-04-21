@@ -4,7 +4,10 @@ export default function EditButton({ onClick }) {
       type="submit"
       className="govuk-button"
       data-module="govuk-button"
-      onClick={onClick}
+      onClick={(e) => {
+        e.stopPropagation();
+        onclick(e);
+      }}
     >
       Edit Task
     </button>
