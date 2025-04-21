@@ -16,6 +16,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
+// Serve the React app's index.html at the root
+const frontendPath = path.join(process.cwd(), "frontend", "dist");
+app.get("/", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+
 // fetch all tasks
 app.get("/tasks", async (req, res) => {
   try {
@@ -67,11 +73,7 @@ app.patch("/tasks/:id", async (req, res) => {
     // Make sure to parse the ID if your database expects a number
     const taskId = parseInt(req.params.id, 10);
 
-    // Log the data being validated to help with debugging
-    console.log("Request body:", req.body);
-
     const validatedData = TaskSchema.partial().parse(req.body);
-    console.log("Validated data:", validatedData);
 
     const task = await updateTask(taskId, validatedData);
     res.status(200).json(task);
@@ -85,21 +87,12 @@ app.patch("/tasks/:id", async (req, res) => {
       });
     }
 
-    // Consider more specific error handling here
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Task API is running ✅");
-});
-
-const frontendPath = path.join(process.cwd(), "frontend", "dist");
+// Serve static files from 'frontend/dist'
 app.use(express.static(frontendPath));
-
-// app.get("/*", (req, res) => {
-//   res.sendFile(path.join(frontendPath, "index.html"));
-// });
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
