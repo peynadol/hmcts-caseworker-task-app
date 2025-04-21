@@ -6,6 +6,7 @@ import { TaskSchema } from "../schemas/task.js";
 import { z } from "zod";
 import path from "path";
 import { fileURLToPath } from "url";
+import { initDB } from "./db/db.js";
 
 const app = express();
 const port = process.env.PORT || 10000;
@@ -77,13 +78,23 @@ app.patch("/tasks/:id", async (req, res) => {
   }
 });
 
-// Serve static files AFTER all API routes
 app.use(express.static(frontendPath));
 
-// For any other request, send the React app
 app.get(/(.*)/, (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
+
+initDB()
+  .then(() => {
+    console.log("Database initialized successfully");
+    app.listen(port, () => {
+      console.log(`App listening on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to initialize database:", err);
+    process.exit(1);
+  });
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
