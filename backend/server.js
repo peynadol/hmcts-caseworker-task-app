@@ -18,7 +18,8 @@ const frontendPath = path.join(__dirname, "..", "frontend", "dist");
 app.use(
   cors({
     origin: "https://hmcts-caseworker-task-app.onrender.com",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
@@ -101,9 +102,5 @@ initDB()
     console.error("Failed to initialize database:", err);
     process.exit(1);
   });
-
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
-});
 
 export { app };
