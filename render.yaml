@@ -2,8 +2,8 @@ services:
   - type: web
     name: hmcts-app-backend
     runtime: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
+    buildCommand: cd backend && npm install && npx tsc
+    startCommand: cd backend && node dist/server.js
     env: node
     envVars:
       - key: DATABASE_URL
@@ -20,7 +20,7 @@ services:
     buildCommand: |
       cd frontend && 
       echo "VITE_API_URL=https://hmcts-app-backend.onrender.com" > .env.production && 
-      npm install && 
+      npm ci && 
       npm run build
     startCommand: cd frontend && npm run preview
     env: node
