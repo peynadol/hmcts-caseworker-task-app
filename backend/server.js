@@ -86,6 +86,10 @@ app.patch("/tasks/:id", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("Task API is running ✅");
+});
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
