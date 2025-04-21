@@ -12,7 +12,6 @@ const port = process.env.PORT || 10000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Important: Define the path to the frontend dist directory
 const frontendPath = path.join(__dirname, "..", "frontend", "dist");
 
 app.use(cors());
@@ -82,7 +81,7 @@ app.patch("/tasks/:id", async (req, res) => {
 app.use(express.static(frontendPath));
 
 // For any other request, send the React app
-app.get("*", (req, res) => {
+app.get(/(.*)/, (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
