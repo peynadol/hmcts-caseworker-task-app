@@ -2,13 +2,13 @@ services:
   - type: web
     name: hmcts-app-backend
     runtime: node
-    buildCommand: cd backend && npm install && npm run build
+    buildCommand: cd backend && npm install
     startCommand: cd backend && node server.js
     env: node
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: your-app-db
+          name: hmcts-task-app-db
           property: connectionString
       - key: NODE_ENV
         value: production
@@ -17,12 +17,16 @@ services:
   - type: web
     name: hmcts-task-app
     runtime: node
-    buildCommand: cd frontend && npm install && npm run build
+    buildCommand: |
+      cd frontend && 
+      echo "VITE_API_URL=https://hmcts-app-backend.onrender.com" > .env.production && 
+      npm install && 
+      npm run build
     startCommand: cd frontend && npm run preview
     env: node
     envVars:
       - key: VITE_API_URL
-        generateValue: https://hmcts-task-app-backend.onrender.com
+        value: https://hmcts-app-backend.onrender.com
     plan: free
 
 databases:
