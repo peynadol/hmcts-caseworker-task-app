@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: hmcts-app-backend
+    name: hmcts-task-app
     runtime: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     env: node
     envVars:
       - key: DATABASE_URL
@@ -12,24 +12,6 @@ services:
           property: connectionString
       - key: NODE_ENV
         value: production
-    plan: free
-
-  - type: web
-    name: hmcts-caseworker-task-app
-    runtime: static
-    buildCommand: |
-      cd frontend &&
-      echo "VITE_API_URL=https://hmcts-app-backend.onrender.com" > .env.production &&
-      npm ci &&
-      npm run build
-    staticPublishPath: frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        value: https://hmcts-app-backend.onrender.com
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
     plan: free
 
 databases:

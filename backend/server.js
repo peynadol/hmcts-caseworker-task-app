@@ -8,22 +8,18 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 10000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// const frontendPath = path.join(process.cwd(), "frontend", "dist");
+// Important: Define the path to the frontend dist directory
+const frontendPath = path.join(__dirname, "..", "frontend", "dist");
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-// app.use(express.static(frontendPath));
 
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(frontendPath, "index.html"));
-// });
-
-// fetch all tasks
+// API routes
 app.get("/tasks", async (req, res) => {
   try {
     const tasks = await getAllTasks();
@@ -34,7 +30,6 @@ app.get("/tasks", async (req, res) => {
   }
 });
 
-// post a task
 app.post("/tasks", async (req, res) => {
   try {
     const validatedData = TaskSchema.parse(req.body);
@@ -44,7 +39,6 @@ app.post("/tasks", async (req, res) => {
       validatedData.status,
       validatedData.due_date
     );
-
     res.status(201).json(task);
   } catch (err) {
     if (err instanceof z.ZodError) {
@@ -56,10 +50,8 @@ app.post("/tasks", async (req, res) => {
   }
 });
 
-// delete individual task
 app.delete("/tasks/:id", async (req, res) => {
   const { id } = req.params;
-
   try {
     await deleteTask(id);
     res.status(204).send();
@@ -68,28 +60,30 @@ app.delete("/tasks/:id", async (req, res) => {
   }
 });
 
-// update a task
 app.patch("/tasks/:id", async (req, res) => {
   try {
-    // Make sure to parse the ID if your database expects a number
     const taskId = parseInt(req.params.id, 10);
-
     const validatedData = TaskSchema.partial().parse(req.body);
-
     const task = await updateTask(taskId, validatedData);
     res.status(200).json(task);
   } catch (err) {
     console.error("Error updating task:", err);
-
     if (err instanceof z.ZodError) {
       return res.status(400).json({
         error: "Validation failed",
         details: err.errors,
       });
     }
-
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+// Serve static files AFTER all API routes
+app.use(express.static(frontendPath));
+
+// For any other request, send the React app
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 app.listen(port, () => {
