@@ -1,6 +1,7 @@
 {
   "name": "hmcts-task-app",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "install": "npm install --prefix backend && npm install --prefix frontend",

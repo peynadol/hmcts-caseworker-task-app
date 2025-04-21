@@ -16,9 +16,6 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
-const frontendPath = path.join(__dirname, "../frontend/dist");
-app.use(express.static(frontendPath));
-
 // fetch all tasks
 app.get("/tasks", async (req, res) => {
   try {
@@ -97,9 +94,12 @@ app.get("/", (req, res) => {
   res.send("Task API is running ✅");
 });
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+const frontendPath = path.join(process.cwd(), "frontend", "dist");
+app.use(express.static(frontendPath));
+
+// app.get("/*", (req, res) => {
+//   res.sendFile(path.join(frontendPath, "index.html"));
+// });
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
