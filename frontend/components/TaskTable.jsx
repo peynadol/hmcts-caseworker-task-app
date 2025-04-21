@@ -39,12 +39,12 @@ export default function TaskTable({
     <>
       {isDeleteMode && tasks.length === 0 && (
         <p className="govuk-body govuk-body--warning">
-          There are no tasks to delete.
+          There are no tasks to delete. Click 'Delete Task' to exit delete mode.
         </p>
       )}
 
       {isDeleteMode && tasks.length > 0 && (
-        <p className="govuk-body">Select a task to delete.</p>
+        <p className="govuk-body">In delete mode - Select a task to delete.</p>
       )}
 
       <table className="govuk-table govuk-table--small-text-until-tablet">
@@ -111,7 +111,7 @@ export default function TaskTable({
             <button
               className="govuk-button govuk-button--warning"
               onClick={handleDeleteConfirm}
-              disabled={tasks.length === 0} 
+              disabled={tasks.length === 0}
             >
               Confirm Delete
             </button>

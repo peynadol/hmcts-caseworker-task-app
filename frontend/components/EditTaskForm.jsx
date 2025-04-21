@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { apiClient } from "../src/api";
 
 export default function EditTaskForm({ task, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
@@ -31,10 +32,7 @@ export default function EditTaskForm({ task, onSubmit, onCancel }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.patch(
-        `http://localhost:3000/tasks/${task.id}`,
-        formData
-      );
+      const response = await apiClient.patch(`/tasks/${task.id}`, formData);
       onSubmit(response.data);
     } catch (err) {
       console.error("Failed to update task", err);

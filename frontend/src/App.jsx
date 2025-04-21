@@ -7,7 +7,7 @@ import Modal from "../components/Modal";
 import CreateTaskForm from "../components/CreateTaskForm";
 import EditTaskForm from "../components/EditTaskForm";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { apiClient } from "./api";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     const getTasks = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/tasks");
+        const response = await apiClient.get("/tasks");
         setTasks(response.data);
       } catch (err) {
         console.error("Unable to fetch tasks", err);
@@ -41,7 +41,7 @@ function App() {
 
   const handleDeleteTask = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:3000/tasks/${taskId}`);
+      await apiClient.delete(`/tasks/${taskId}`);
       setTasks(tasks.filter((task) => task.id !== taskId));
     } catch (err) {
       console.error("Unable to delete task", err);

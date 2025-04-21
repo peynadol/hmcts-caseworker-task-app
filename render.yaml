@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: hmcts-app-backend
+    runtime: node
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && node server.js
+    env: node
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: your-app-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+    plan: free
+
+  - type: web
+    name: hmcts-task-app
+    runtime: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run preview
+    env: node
+    envVars:
+      - key: VITE_API_URL
+        generateValue: https://hmcts-task-app-backend.onrender.com
+    plan: free
+
+databases:
+  - name: hmcts-task-app-db
+    plan: free
+    databaseName: hmcts_db
+    user: hmcts_db_user

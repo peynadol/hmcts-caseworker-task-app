@@ -1,4 +1,3 @@
-//TODO: add input validation to routes
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -7,7 +6,7 @@ import { TaskSchema } from "../schemas/task.ts";
 import { z } from "zod";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -88,7 +87,7 @@ app.patch("/tasks/:id", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("App listening on port 3000");
+  console.log(`App listening on port ${port}`);
 });
 
 export { app };

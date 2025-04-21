@@ -1,6 +1,7 @@
 {
   "type": "module",
   "scripts": {
+    "start": "node server.js",
     "test": "vitest",
     "dev": "node --watch server.js"
   },

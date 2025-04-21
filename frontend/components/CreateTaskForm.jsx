@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { z } from "zod";
 import { TaskSchema } from "../../schemas/task";
+import { apiClient } from "../src/api";
 
 function CreateTaskForm({ onSubmit }) {
   const [taskTitle, setTaskTitle] = useState("");
@@ -116,15 +117,11 @@ function CreateTaskForm({ onSubmit }) {
 
     console.log(task);
     try {
-      const response = await axios.post(
-        "http://localhost:3000/tasks",
-        result.data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await apiClient.post("/tasks", result.data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       onSubmit(response.data);
     } catch (error) {
       console.error("Error submitting task:", error);
