@@ -12,16 +12,16 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const frontendPath = path.join(process.cwd(), "frontend", "dist");
+// const frontendPath = path.join(process.cwd(), "frontend", "dist");
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(express.static(frontendPath));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
-});
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(frontendPath, "index.html"));
+// });
 
 // fetch all tasks
 app.get("/tasks", async (req, res) => {
