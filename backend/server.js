@@ -25,6 +25,7 @@ app.use(
 );
 app.use(express.json());
 app.use(morgan("dev"));
+app.options(/(.*)/, cors());
 
 // API routes
 app.get("/tasks", async (req, res) => {
