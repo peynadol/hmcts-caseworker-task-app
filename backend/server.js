@@ -4,13 +4,20 @@ import morgan from "morgan";
 import { addTask, deleteTask, getAllTasks, updateTask } from "./db/queries.js";
 import { TaskSchema } from "../schemas/task.js";
 import { z } from "zod";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
 const port = process.env.PORT || 3000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+
+const frontendPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendPath));
 
 // fetch all tasks
 app.get("/tasks", async (req, res) => {
@@ -88,6 +95,10 @@ app.patch("/tasks/:id", async (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("Task API is running ✅");
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 app.listen(port, () => {
