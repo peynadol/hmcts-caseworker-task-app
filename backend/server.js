@@ -15,14 +15,15 @@ const __dirname = path.dirname(__filename);
 
 const frontendPath = path.join(__dirname, "..", "frontend", "dist");
 
-app.use(
-  cors({
-    origin: "https://hmcts-caseworker-task-app.onrender.com",
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://hmcts-caseworker-task-app.onrender.com",
+//     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
+app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 app.options(/(.*)/, cors());
