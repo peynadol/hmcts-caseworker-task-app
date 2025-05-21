@@ -1,10 +1,16 @@
-# HMCTS Caseworker Task App
+# Caseworker Task App
 
 A full-stack app built with **React**, **Node.js (Express)**, and **PostgreSQL**.
 
 ## 🌐 Live Demo  
+
+🚫 **Important Note:**  
+Due to my Render trial expiring, the backend (including the PostgreSQL database) is no longer active.  
+As a result, the full functionality of the application (e.g., adding, editing, or deleting tasks) will **not work** in the live demo.
+
 Hosted on [Render](https://hmcts-caseworker-task-app.onrender.com/)
 _⚠️ Please note: Render may take 30–60 seconds to spin up._
+
 
 ## Tech Stack  
 - **Frontend**: React, HTML, CSS  
